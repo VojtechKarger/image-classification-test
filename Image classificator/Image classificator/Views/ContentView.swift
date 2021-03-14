@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var classification: String?
     @State private var presentingAlert = false
     @State private var showingWeb = false
+
     
     //defining ML model
     let model: TestML = {
@@ -41,21 +42,7 @@ struct ContentView: View {
                             .scaledToFit()
                             .padding(.bottom)
                     }
-                    VStack{
-                        HStack{
-                            if classification != nil{
-                                Text(classification ?? "")
-                                    .padding(10)
-                                    .font(.title)
-                                    .background(Color.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                padding(.leading, 50)
-
-                                Spacer()
-                                InfoButton()
-                                    .padding()
-                          }
-                        }
+                    VStack {
                         Spacer()
                         Button(action: {
                             showingPicker = true
@@ -91,17 +78,23 @@ struct ContentView: View {
         let resizedImg = imageToClassify.scalePreservingAspectRatio(targetSize: CGSize(width: 299, height: 299))
         //converting to buffer - needed for ML model
         guard let buffer = resizedImg.toCVPixelBuffer() else { print("neumí to konvertovat"); return }
+        // just testing
+
         
         //classifying -- ignorovat nazvy faaaakt jsem nevedel jak to nazvat
         let classify = try? model.prediction(image: buffer)
         if let classifi = classify {
             classification = classifi.classLabel
-            print(classifi.classLabel + "hurááááááá funguje toooo!!!!!!")
-            
+            print(classifi.classLabel + "   hurááááááá funguje toooo!!!!!!")
+            print(classifi.classLabelProbs)
+
         }else{
             print("tak uz faaaakt nevim 😭")
             classification = "nefunguje to 😡"
         }
+        
+        
+        
         presentingAlert.toggle()
         
         
